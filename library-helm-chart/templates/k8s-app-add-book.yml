@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: app-add-book
+    labels:
+        app: add-book
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: add-book
+    template:
+        metadata:
+            labels:
+                app: add-book
+        spec:
+            containers:
+            - name: add-book
+              image: peterhuber/add_book.library:latest
+              imagePullPolicy: Always
+              env:
+              - name: RABBITMQ_URL
+                valueFrom:
+                    configMapKeyRef:
+                        name: configmap-library
+                        key: rabbitmq-url
+              - name: MYSQL_URL
+                valueFrom:
+                    configMapKeyRef:
+                        name: configmap-library
+                        key: mysql-url
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                    secretKeyRef:
+                        name: mysql-secrets
+                        key: ROOT_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: app-add-book
+spec:
+    selector:
+        app: add-book
+    ports:
+        - protocol: TCP
+          port: 3501

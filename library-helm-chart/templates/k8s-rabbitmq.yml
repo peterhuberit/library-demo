@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: rabbitmq-service
+spec:
+  #type: NodePort
+  type: LoadBalancer # https://youtu.be/EQNO_kM96Mo?list=PLy7NrYWoggjwPggqtFsI_zMAwvG0SqYCb&t=1447
+  ports:
+  - port: 15672
+    protocol: TCP
+    targetPort: 15672 # megegyezik a pod containerPort-val
+    nodePort: 30001
+    name: http
+  - protocol: TCP
+    port: 5672
+    targetPort: 5672
+    name: amqp    
+  selector:
+    run: rabbitmq
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rabbitmq
+  creationTimestamp: null
+  labels:
+    run: rabbitmq
+spec:
+  containers:
+  - image: rabbitmq:3-management
+    name: rabbitmq-pod
+    env:
+    - name: "RABBITMQ_ERLANG_COOKIE"
+      value: "1WqgH8N2v1qDBDZDbNy8Bg9IkPWLEpu79m6q+0t36lQ="    
+    ports:
+    - containerPort: 15672
+    - containerPort: 25672
+    - containerPort: 5672
+    - containerPort: 4369    
+    resources: {}
+  #dnsPolicy: ClusterFirst
+  #restartPolicy: Never
+status: {}

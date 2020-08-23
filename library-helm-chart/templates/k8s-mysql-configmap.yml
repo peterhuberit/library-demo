@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  initdb.sql: |
+    CREATE DATABASE IF NOT EXISTS library CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    USE library;
+    CREATE TABLE IF NOT EXISTS book (
+        id  MEDIUMINT UNSIGNED AUTO_INCREMENT NOT NULL, 
+        title VARCHAR(255) NOT NULL, 
+        author VARCHAR(255) NOT NULL, 
+        publisher VARCHAR(255) NOT NULL,
+        publishing_date DATETIME NOT NULL,
+        date_of_listing DATETIME NOT NULL,
+        number_of_copies SMALLINT NOT NULL,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = INNODB;
+    CREATE TABLE IF NOT EXISTS stat (
+        stat_label VARCHAR(255) NOT NULL, 
+        stat_value TEXT NOT NULL,
+        PRIMARY KEY(stat_label)
+    ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = INNODB;

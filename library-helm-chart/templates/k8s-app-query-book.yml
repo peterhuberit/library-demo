@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: app-query-book
+    labels:
+        app: query-book
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: query-book
+    template:
+        metadata:
+            labels:
+                app: query-book
+        spec:
+            containers:
+            - name: query-book
+              image: peterhuber/query_book.library:latest
+              imagePullPolicy: Always
+              env:
+              - name: RABBITMQ_URL
+                valueFrom:
+                    configMapKeyRef:
+                        name: configmap-library
+                        key: rabbitmq-url
+              - name: MYSQL_URL
+                valueFrom:
+                    configMapKeyRef:
+                        name: configmap-library
+                        key: mysql-url
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                    secretKeyRef:
+                        name: mysql-secrets
+                        key: ROOT_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: app-query-book
+spec:
+    selector:
+        app: query-book
+    ports:
+        - protocol: TCP
+          port: 3502
+
+
+

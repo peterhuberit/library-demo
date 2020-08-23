@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: configmap-library
+    #namespace: ns-library
+data:
+    mysql-url: mysql-service
+    rabbitmq-url: rabbitmq-service
+
