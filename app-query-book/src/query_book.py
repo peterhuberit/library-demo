@@ -6,12 +6,13 @@
 konyvtar menedzsment - konyv lekerdezes
 """
 
-import pika, sys, os, mysql.connector, json, re
+import pika, sys, os, mysql.connector, json, re, datetime
 
 cnx = None
+rabbitmq_url = None
 
 def main():
-    global cnx
+    global cnx, rabbitmq_url
     ROUTE = 'query_book'
 
     if os.path.exists(os.path.join('config','cnf.json')):
@@ -69,8 +70,13 @@ def callback(ch, method, properties, body):
     params = ('%'+query['title']+'%', '%'+query['author']+'%', '%'+query['publisher']+'%', '%'+query['publishing_date']+'%', '%'+query['date_of_listing']+'%', query['number_of_copies'], query['number_of_copies'])
     cursor.execute(cmd, params)
     result = cursor.fetchall()
-    print('RESULT: ', result)
-    # TODO - publish result on RabbitMQ?
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_url))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='library', exchange_type='direct')
+    channel.basic_publish(exchange='library', routing_key='query_book_result', body=json.dumps(result, default=default_date))
+    connection.close()
+    print(" [x] Sent %r" % (result,))
 
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
@@ -82,6 +88,10 @@ def get_cnx(db_user, db_pwd, db_host, db):
               charset='utf8',
               use_unicode=True,
               use_pure=True)
+
+def default_date(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
 
 if __name__ == '__main__':
     main()

@@ -6,12 +6,13 @@
 konyvtar menedzsment - statisztika lekerdezes
 """
 
-import pika, sys, os, mysql.connector, json, re
+import pika, sys, os, mysql.connector, json, re, datetime
 
 cnx = None
+rabbitmq_url = None
 
 def main():
-    global cnx
+    global cnx, rabbitmq_url
     ROUTE = 'query_stat'
 
     if os.path.exists(os.path.join('config','cnf.json')):
@@ -53,10 +54,19 @@ def callback(ch, method, properties, body):
     cursor = cnx.cursor()
     cursor.execute(cmd)
     result = cursor.fetchall()
-    print('RESULT: ', result)
-    # TODO - publish result on RabbitMQ?
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_url))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='library', exchange_type='direct')
+    channel.basic_publish(exchange='library', routing_key='query_stat_result', body=json.dumps(result, default=default_date))
+    connection.close()
+    print(" [x] Sent %r" % (result,))
 
     ch.basic_ack(delivery_tag = method.delivery_tag)
+
+def default_date(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
 
 def get_cnx(db_user, db_pwd, db_host, db):
     return mysql.connector.connect(user=db_user,
