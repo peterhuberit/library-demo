@@ -1,3 +1,4 @@
 app-add-book/src/config/cnf.json
-app-add-query/src/config/cnf.json
+app-query-book/src/config/cnf.json
+app-query-stat/src/config/cnf.json
 docker-compose.yml
