@@ -63,7 +63,7 @@ docker tag query_stat.library:latest <DOCKER_ID>/query_stat.library:latest
 docker push peterhuber/query_stat.library:latest
 ```
 
-#### Kubernetes, Helm
+### Kubernetes, Helm
 Az alkalmazás Helm chart-ja library-helm-chart/ folder-ben találhatóak, a python service-ok mellett a RabbitMQ és a MySQL Kubernetes konfigjai is itt vannak. Ehhez a demóhoz egyedül a MySQL jelszavát raktam ki a library-helm-chart/values.yaml-be.
 
 Install:
@@ -77,19 +77,19 @@ minikube service rabbitmq
 ```
 
 
-#### Fejlesztés lokálban
-##### RabbitMQ:
+### Fejlesztés lokálban
+#### RabbitMQ:
 A fejlesztéshez szükséges RabbitMQ-t docker image-ből is lehet indítani a fejlesztői gépen:
 ```
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 Ebben az esetben a menedzsment felület a http://localhost:15672 címen érhető el.
 
-##### Adatbázis
+#### Adatbázis
 Az adatbázis eléréséhez szükséges az egyes python service-ok konfigjának a módosítása:
 azaz a _app-add-book|app-query-book|app-query-stat/src/config/cnf.json.DIST_ fájlok értelemszerű kitöltése és mentés cnf.json néven
 
-##### service-ek indítása
+#### service-ek indítása
 ```
 cd app-add-book/src && python3 add_book.py
 cd app-query-book/src && python3 query_book.py
@@ -97,10 +97,10 @@ cd app-query-stat/src && python3 query_stat.py
 ```
 
 
-#### Tesztadatok
+### Tesztadatok
 A service-okat a RabbitMQ message-eken keresztül lehet elérni, teszteléshez a menedzsment felületen keresztül is:
 
-##### Könyv hozzáadása:
+#### Könyv hozzáadása:
 exchange: library
 routing: add_book
 payload:
@@ -115,7 +115,7 @@ payload:
 }
 ```
 
-##### Könyv keresése:
+#### Könyv keresése:
 exchange: library
 routing: query_book
 példa payload:
@@ -130,7 +130,7 @@ példa payload:
 }
 ```
 
-##### Statisztikák lekérdezése:
+#### Statisztikák lekérdezése:
 exchange: library
 routing: query_stat
 payload: ```{}```
