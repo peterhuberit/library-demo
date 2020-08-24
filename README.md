@@ -7,7 +7,7 @@ Az alkalmazás három különálló service-ból áll, ezek az app-add-book, app
 Az egyes service-ok alapvetően a RabbitMQ message broker-t használják a belső kommunikációra, illetve MySQL (5.7) adatbázist az adatok tárolására.
 
 ### Service-ok
-#### add_book/src/add_book.py
+#### app-add-book/src/add_book.py
 Ez a sevice felel az új könyvek nyílvántartásba vételéért, illetve a könyvekről készült tárolt statisztikák frissítéséért.
 A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár json adatot, például:
 ```json
@@ -23,7 +23,7 @@ A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár j
 
 Az adatok a _library_ schema _book_ táblájába mentődnek.
 
-#### query_book/src/query_book.py
+#### app-query-book/src/query_book.py
 A könyvek keresésére szolgáló service, a message brokeren keresztül a _library_ exchange _query_book_ route-jára vár json adatot, például:
 ```json
 {
@@ -32,7 +32,7 @@ A könyvek keresésére szolgáló service, a message brokeren keresztül a _lib
 }
 ```
 
-#### query_stat/src/query_stat.py
+#### app-query-stat/src/query_stat.py
 A könyvekről készült tárolt statisztikák lekérdezésére szolgáló service. A message brokeren keresztül a _library_ exchange _query_stat_ route-jára vár bármilyen json formátumú adatot (pl.: {}). A stat tábla teljes tartalmát visszaadja. A tábla az egyes rekordjai a könyvtár különböző statisztikáit tartalmazzák, pl.:
 ```
 stat_label         |  stat_value
