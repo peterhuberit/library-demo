@@ -45,17 +45,17 @@ book_by_publisher  |  [["Bantam Spectra", "15"], ["Pan Books", "14"], ["Victor G
 A python alkalmazások konténerizációja a python:3.8-slim-buster image-en alapul, ez egy relatív "lightweight" python image. 
 A következő parancsokat kell futtatni az egyes konténerek létrehozásához, és Docker Hub-ba feltöltéséhez az alkalmazás folderében futtatva:
 ```
-#add_book/:
+#app-add-book/:
 docker build -t add_book.library .
 docker tag add_book.library:latest <DOCKER_ID>/add_book.library:latest
 docker push peterhuber/add_book.library:latest
 
-#query_book/:
+#app-query-book/:
 docker build -t query_book.library .
 docker tag query_book.library:latest <DOCKER_ID>/query_book.library:latest
 docker push peterhuber/query_book.library:latest
 
-#query_stat/:
+#app-query-stat/:
 docker build -t query_stat.library .
 docker tag query_stat.library:latest <DOCKER_ID>/query_stat.library:latest
 docker push peterhuber/query_stat.library:latest
