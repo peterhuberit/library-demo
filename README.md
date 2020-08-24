@@ -31,7 +31,7 @@ A könyvek keresésére szolgáló service, a message brokeren keresztül a _lib
     "author": "Douglas Adams"
 }
 ```
-A service a _book_ táblából lekérdezett találatokat a _library_ exchange _query_book_result_ route-jára írja json formátumban.
+A service a _book_ táblából lekérdezett találatokat a _library_ exchange _query_book_result_ route-jára küldi json formátumban.
 
 #### app-query-stat/src/query_stat.py
 A könyvekről készült tárolt statisztikák lekérdezésére szolgáló service. A message brokeren keresztül a _library_ exchange _query_stat_ route-jára vár bármilyen json formátumú adatot (pl.: {}). A stat tábla teljes tartalmát visszaadja. A tábla az egyes rekordjai a könyvtár különböző statisztikáit tartalmazzák, pl.:
@@ -40,7 +40,7 @@ stat_label         |  stat_value
 book_by_author     |  [["Douglas Adams", "14"], ["William Gibson", "32"]]
 book_by_publisher  |  [["Bantam Spectra", "15"], ["Pan Books", "14"], ["Victor Gollancz Ltd", "17"]]
 ```
-A service a _stat_ táblából lekérdezett találatokat a _library_ exchange _query_stat_result_ route-jára írja json formátumban.
+A service a _stat_ táblából lekérdezett találatokat a _library_ exchange _query_stat_result_ route-jára küldi json formátumban.
 
 ### Docker
 #### Docker konténerek létrehozása
