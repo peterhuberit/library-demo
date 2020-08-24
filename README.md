@@ -8,7 +8,7 @@ Az egyes service-ok alapvetően a RabbitMQ message broker-t használják a bels�
 
 ### Service-ok
 #### app-add-book/src/add_book.py
-Ez a sevice felel az új könyvek nyílvántartásba vételéért, illetve a könyvekről készült tárolt statisztikák frissítéséért.
+Ez a service felel az új könyvek nyílvántartásba vételéért, illetve a könyvekről készült tárolt statisztikák frissítéséért.
 A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár json adatot, például:
 ```json
 {
