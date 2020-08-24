@@ -1,5 +1,5 @@
 # Könyvtárnyilvántartó demo alkalmazás
-## Python service alkalmazás RabbitMQ, Docker, Kubernetes és Helm Chart alapokon
+## Konténerizált python service alkalmazás RabbitMQ, MySQL, Docker, Kubernetes és Helm Chart alapokon
 
 Az alkalmazás három különálló service-ból áll, ezek az app-add-book, app-query-book, app-query-stat (ld. az ilyen nevű foldereket), python3-ban írva.
 
