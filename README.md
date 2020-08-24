@@ -102,6 +102,7 @@ A service-okat a RabbitMQ message-eken keresztül lehet elérni, teszteléshez a
 exchange: library
 routing: add_book
 payload:
+```
 {
     "title": "The Hitchhiker's Guide to the Galaxy",
     "author": "Douglas Adams",
@@ -110,12 +111,13 @@ payload:
     "date_of_listing": "2020-02-03",
     "number_of_copies": 3
 }
-
+```
 
 ##### Könyv keresése:
 exchange: library
 routing: query_book
 példa payload:
+```
 {
     "title": "",
     "author": "Douglas",
@@ -124,12 +126,12 @@ példa payload:
     "date_of_listing": "",
     "number_of_copies": 2
 }
-
+```
 
 ##### Statisztikák lekérdezése:
 exchange: library
 routing: query_stat
-payload: {}
+payload: ```{}```
 
 A beérkezett és érvényes üzenetekre a konzolba írják a választ az egyes service-ok.
 
