@@ -73,7 +73,7 @@ helm install library-install library-helm-chart/
 
 Minikube-ban tesztelve a RabbitMQ menedzsment felületének eléréséhez a következő parancs is szükséges:
 ```
-minikube service rabbitmq
+minikube service rabbitmq-service
 ```
 
 
