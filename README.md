@@ -6,7 +6,7 @@ Az alkalmazás három különálló service-ból áll, ezek az app-add-book, app
 ### Felépítés
 Az egyes service-ok alapvetően a RabbitMQ message broker-t használják a belső kommunikációra, illetve MySQL (5.7) adatbázist az adatok tárolására.
 
-### Service-ok
+### Service-k
 #### app-add-book/src/add_book.py
 Ez a service felel az új könyvek nyílvántartásba vételéért, illetve a könyvekről készült tárolt statisztikák frissítéséért.
 A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár json adatot, például:
