@@ -1,15 +1,13 @@
-# Könyvtárnyilvántartó demo alkalmazás
-## Konténerizált python service alkalmazás RabbitMQ, MySQL, Docker, Kubernetes és Helm Chart alapokon
+# Library Management Demo Application
+## Containerized Python Service Application Based on RabbitMQ, MySQL, Docker, Kubernetes, and Helm Chart
+The application consists of three separate services: app-add-book, app-query-book, app-query-stat (see folders with these names), written in Python 3.
 
-Az alkalmazás három különálló service-ból áll, ezek az app-add-book, app-query-book, app-query-stat (ld. az ilyen nevű foldereket), python3-ban írva.
+### Structure
+Each service primarily uses the RabbitMQ message broker for internal communication and MySQL (5.7) database for data storage.
 
-### Felépítés
-Az egyes service-ok alapvetően a RabbitMQ message broker-t használják a belső kommunikációra, illetve MySQL (5.7) adatbázist az adatok tárolására.
-
-### Service-k
+### Services
 #### app-add-book/src/add_book.py
-Ez a service felel az új könyvek nyílvántartásba vételéért, illetve a könyvekről készült tárolt statisztikák frissítéséért.
-A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár json adatot, például:
+This service is responsible for registering new books and updating stored statistics about books. It waits for JSON data on the _library_ exchange _add_book_ route via the message broker, for example:
 ```json
 {
     "title": "The Hitchhiker's Guide to the Galaxy",
@@ -20,32 +18,30 @@ A message brokeren keresztül a _library_ exchange _add_book_ route-jára vár j
     "number_of_copies": 5
 }
 ```
-
-Az adatok a _library_ schema _book_ táblájába mentődnek.
+The data is saved in the _book_ table of _library_ schema.
 
 #### app-query-book/src/query_book.py
-A könyvek keresésére szolgáló service, a message brokeren keresztül a _library_ exchange _query_book_ route-jára vár json adatot, például:
+This service is used for searching books, waiting for JSON data on the _query_book_ route of _library_ exchange via the message broker, for example:
 ```json
 {
     "title": "Guide",
     "author": "Douglas Adams"
 }
 ```
-A service a _book_ táblából lekérdezett találatokat a _library_ exchange _query_book_result_ route-jára küldi json formátumban.
+The service sends the results retrieved from the _book_ table to the _query_book_result_ route of _library_ exchange in JSON format.
 
 #### app-query-stat/src/query_stat.py
-A könyvekről készült tárolt statisztikák lekérdezésére szolgáló service. A message brokeren keresztül a _library_ exchange _query_stat_ route-jára vár bármilyen json formátumú adatot (pl.: {}). A stat tábla teljes tartalmát visszaadja. A tábla az egyes rekordjai a könyvtár különböző statisztikáit tartalmazzák, pl.:
+This service is used for querying stored statistics about books. It waits for any JSON formatted data (e.g., {}) on the _query_stat_ route of library exchange via the message broker. It returns the entire contents of the stat table. The table records contain various statistics about the library, e.g.:
 ```
 stat_label         |  stat_value
 book_by_author     |  [["Douglas Adams", "14"], ["William Gibson", "32"]]
 book_by_publisher  |  [["Bantam Spectra", "15"], ["Pan Books", "14"], ["Victor Gollancz Ltd", "17"]]
 ```
-A service a _stat_ táblából lekérdezett találatokat a _library_ exchange _query_stat_result_ route-jára küldi json formátumban.
+The service sends the results retrieved from the _stat_ table to the _query_stat_result_ route of _library_ exchange in JSON format.
 
 ### Docker
-#### Docker konténerek létrehozása
-A python alkalmazások konténerizációja a python:3.8-slim-buster image-en alapul, ez egy relatív "lightweight" python image. 
-A következő parancsokat kell futtatni az egyes konténerek létrehozásához, és Docker Hub-ba feltöltéséhez az alkalmazás folderében futtatva:
+#### Creating Docker Containers
+The containerization of Python applications is based on the python:3.8-slim-buster image, which is a relatively "lightweight" Python image. The following commands need to be run to create the containers and upload them to Docker Hub, executed in the application folder:
 ```
 #app-add-book/:
 docker build -t add_book.library .
@@ -62,45 +58,42 @@ docker build -t query_stat.library .
 docker tag query_stat.library:latest <DOCKER_ID>/query_stat.library:latest
 docker push peterhuber/query_stat.library:latest
 ```
-
-### Kubernetes, Helm
-Az alkalmazás Helm chart-ja library-helm-chart/ folder-ben találhatóak, a python service-ok mellett a RabbitMQ és a MySQL Kubernetes konfigjai is itt vannak. Ehhez a demóhoz egyedül a MySQL jelszavát raktam ki a library-helm-chart/values.yaml-be.
+Kubernetes, Helm
+The application's Helm chart is located in the library-helm-chart/ folder, along with the Kubernetes configurations for RabbitMQ and MySQL. For this demo, only the MySQL password is set in the library-helm-chart/values.yaml.
 
 Install:
 ```
 helm install library-install library-helm-chart/
 ```
 
-Minikube-ban tesztelve a RabbitMQ menedzsment felületének eléréséhez a következő parancs is szükséges:
+When testing with Minikube, the following command is also necessary to access the RabbitMQ management interface:
 ```
 minikube service rabbitmq-service
 ```
 
-
-### Fejlesztés lokálban
+### Local Development
 #### RabbitMQ:
-A fejlesztéshez szükséges RabbitMQ-t docker image-ből is lehet indítani a fejlesztői gépen:
+RabbitMQ needed for development can be started from a Docker image on the developer machine:
 ```
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
-Ebben az esetben a menedzsment felület a http://localhost:15672 címen érhető el.
+In this case, the management interface is accessible at http://localhost:15672.
 
-#### Adatbázis
-Az adatbázis eléréséhez szükséges az egyes python service-ok konfigjának a módosítása:
-azaz a _app-add-book|app-query-book|app-query-stat/src/config/cnf.json.DIST_ fájlok értelemszerű kitöltése és mentés cnf.json néven
+#### Database
+To access the database, the configuration of each Python service needs to be modified:
+that is, appropriately fill out the _app-add-book|app-query-book|app-query-stat/src/config/cnf.json.DIST_ files and save them as cnf.json.
 
-#### service-ek indítása
+#### Starting services
 ```
 cd app-add-book/src && python3 add_book.py
 cd app-query-book/src && python3 query_book.py
 cd app-query-stat/src && python3 query_stat.py
 ```
 
+### Test Data
+The services can be accessed via RabbitMQ messages, which can also be tested through the management interface:
 
-### Tesztadatok
-A service-okat a RabbitMQ message-eken keresztül lehet elérni, teszteléshez a menedzsment felületen keresztül is:
-
-#### Könyv hozzáadása:
+#### Adding a Book:
 exchange: library
 routing: add_book
 payload:
@@ -115,10 +108,10 @@ payload:
 }
 ```
 
-#### Könyv keresése:
+#### Searching for a Book:
 exchange: library
 routing: query_book
-példa payload:
+example payload:
 ```
 {
     "title": "",
@@ -130,11 +123,10 @@ példa payload:
 }
 ```
 
-#### Statisztikák lekérdezése:
+#### Querying Statistics:
 exchange: library
 routing: query_stat
 payload: ```{}```
 
-A beérkezett és érvényes üzenetekre a konzolba minden esetben írnak log-ot az egyes service-ok.
-
+Valid messages received will always log to the console by each service.
 
