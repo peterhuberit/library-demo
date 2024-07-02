@@ -58,7 +58,8 @@ docker build -t query_stat.library .
 docker tag query_stat.library:latest <DOCKER_ID>/query_stat.library:latest
 docker push peterhuber/query_stat.library:latest
 ```
-Kubernetes, Helm
+
+### Kubernetes, Helm
 The application's Helm chart is located in the library-helm-chart/ folder, along with the Kubernetes configurations for RabbitMQ and MySQL. For this demo, only the MySQL password is set in the library-helm-chart/values.yaml.
 
 Install:
