@@ -3,7 +3,7 @@
 """
 @author: huberp
 
-konyvtar menedzsment - konyv hozzaadas
+library management - add book
 """
 
 import pika, sys, os, mysql.connector, json, re
