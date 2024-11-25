@@ -3,7 +3,7 @@
 """
 @author: huberp
 
-konyvtar menedzsment - statisztika lekerdezes
+library management - query statistics
 """
 
 import pika, sys, os, mysql.connector, json, re, datetime
