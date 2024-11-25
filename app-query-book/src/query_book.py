@@ -3,7 +3,7 @@
 """
 @author: huberp
 
-konyvtar menedzsment - konyv lekerdezes
+library management - query books
 """
 
 import pika, sys, os, mysql.connector, json, re, datetime
